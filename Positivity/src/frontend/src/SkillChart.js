@@ -31,18 +31,20 @@ const SkillChart = () => {
                 .query({
                     query: gql`
 {
-  positivitydbschema_person {
-    name
-    id
+  positivitydbschema_developedskill(where: {personid: {_eq: 1}}) {
+    hours
+    skill {
+      name
+      id
+    }
   }
 }
     `
                 })
-                .then(result => result.data.positivitydbschema_person.map(hours => {
-                    dataArray = [hours.name, hours.id]
+                .then(result => result.data.positivitydbschema_developedskill.map(hours => {
+                    dataArray = [hours.skill.name, hours.hours]
                     chartDataArray.push(dataArray)
                     setDataToChart(chartDataArray)
-                    console.log(dataToChart)
                 }))
 
         } catch (e) {
