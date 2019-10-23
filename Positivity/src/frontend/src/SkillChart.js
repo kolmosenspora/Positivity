@@ -16,6 +16,10 @@ const SkillChart = () => {
         uri: 'http://localhost:8080/v1/graphql'
     });
 
+    var dataArray = [];
+    var chartDataArray = [];
+    chartDataArray.push(["People", "Lenght"])
+
     const client = new ApolloClient({
         cache,
         link
@@ -34,39 +38,24 @@ const SkillChart = () => {
 }
     `
                 })
-                .then(result => setData(result.data.positivitydbschema_person));
-
-
+                .then(result => result.data.positivitydbschema_person.map(hours => {
+                    dataArray = [hours.name, hours.id]
+                    chartDataArray.push(dataArray)
+                    setDataToChart(chartDataArray)
+                    console.log(dataToChart)
+                }))
 
         } catch (e) {
             console.log(e)
 
         }
-    });
-
-
-    var Lista = [["miko", "Lenght"], ["Miko", 10]]
 
 
 
-useEffect(() => {
-    var dataArray = [];
-    var chartDataArray = [];
-        chartDataArray.push(["People", "Lenght"])
-        const supaData = hoursData.map(hours => {
-            dataArray = [hours.name, hours.id]
-            chartDataArray.push(dataArray)
-            setDataToChart(chartDataArray)
-        })
+
+    }, []);
 
 
-
-})
-
-    const givemeStuff = () => {
-        console.log(dataToChart, "Data to chart")
-        console.log(Lista)
-    }
 
 
  return (
@@ -87,7 +76,7 @@ useEffect(() => {
         // For tests
         rootProps={{ 'data-testid': '6' }}
     />
-    <h1 onClick={givemeStuff}>Jee jee</h1>
+    <h1>Jee jee</h1>
 </div>
 
     )
