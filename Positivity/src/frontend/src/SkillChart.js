@@ -8,7 +8,6 @@ import gql from "graphql-tag";
 
 const SkillChart = () => {
 
-    const [hoursData, setData] = useState([]);
     const [dataToChart, setDataToChart] = useState([]);
 
     const cache = new InMemoryCache();
@@ -18,7 +17,7 @@ const SkillChart = () => {
 
     var dataArray = [];
     var chartDataArray = [];
-    chartDataArray.push(["People", "Lenght"])
+    chartDataArray.push(["Skills", "Hours spent"])
 
     const client = new ApolloClient({
         cache,
@@ -31,18 +30,21 @@ const SkillChart = () => {
                 .query({
                     query: gql`
 {
-  positivitydbschema_developedskill(where: {personid: {_eq: 1}}) {
-    hours
-    skill {
-      name
-      id
+  skill {
+    name
+    developedskills_aggregate(where: {personid: {_eq: 1}}) {
+      aggregate {
+        sum {
+          hours
+        }
+      }
     }
   }
 }
     `
                 })
-                .then(result => result.data.positivitydbschema_developedskill.map(hours => {
-                    dataArray = [hours.skill.name, hours.hours]
+                .then(result => result.data.skill.map(skills => {
+                    dataArray = [skills.name, skills.developedskills_aggregate.aggregate.sum.hours]
                     chartDataArray.push(dataArray)
                     setDataToChart(chartDataArray)
                 }))
